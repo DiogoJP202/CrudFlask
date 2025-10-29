@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="utf-8">
+	<title>Criar Usuário</title>
+	<style>
+		body { font-family: Arial, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; }
+		label { display:block; margin-top: 0.75rem; }
+		input { width:100%; padding:0.5rem; margin-top:0.25rem; box-sizing:border-box }
+		button { margin-top:1rem; padding:0.5rem 1rem }
+		#mensagem { margin-top:1rem; font-weight:600 }
+        .actions { margin: 1rem 0; }
+        .actions a { 
+            margin: 1rem; 
+            font-style: none;
+            text-decoration: none;
+            color: rgb(0, 164, 164);
+        }
+        .actions a:hover{
+            color: rgb(0, 210, 210);
+        }
+	</style>
+</head>
+<body>
+    <div class="actions">
+        <a href="/">Voltar para a tela inicial</a><br>
+        <a href="/verUsuarios">Listar Usuários</a><br>
+        <a href="/procurarUsuario">Procurar Usuário Específico</a><br>
+        <a href="/atualizarUsuario">Atualizar Usuário</a><br>
+        <a href="/excluirUsuario">Excluir Usuário</a>
+    </div>
+
+	<h1>Criar Usuário</h1>
+
+	<form id="criarForm">
+		<label for="nome">Nome</label>
+		<input type="text" id="nome" name="nome" required>
+
+		<label for="email">Email</label>
+		<input type="email" id="email" name="email" required>
+
+		<button type="submit">Enviar</button>
+	</form>
+
+	<div id="mensagem" role="status" aria-live="polite"></div>  
+
+	<script>
+	(function(){
+		const form = document.getElementById('criarForm');
+		const msg = document.getElementById('mensagem');
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			msg.textContent = '';
+
+			const nome = document.getElementById('nome').value.trim();
+			const email = document.getElementById('email').value.trim();
+
+			if(!nome || !email){
+				msg.textContent = 'Preencha nome e email.';
+				return;
+			}
+
+			try{
+				const res = await fetch('/users', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ nome: nome, email: email })
+				});
+
+				const data = await res.json().catch(() => ({}));
+
+				if(res.ok){
+					msg.textContent = data.Message || 'Usuário cadastrado com sucesso!';
+					form.reset();
+				} else {
+					msg.textContent = data.Error || JSON.stringify(data) || ('Erro: ' + res.status);
+				}
+			} catch(err){
+				msg.textContent = 'Erro de rede: ' + (err.message || err);
+			}
+		});
+	})();
+	</script>
+</body>
+</html>

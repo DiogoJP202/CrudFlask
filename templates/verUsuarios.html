@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Todos Usuários</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid #ddd; }
+        th { background: #f5f5f5; }
+        .loading { color: #666; font-style: italic; }
+        .error { color: #d00; }
+        .actions { margin: 1rem 0; }
+        .actions a { 
+            margin: 1rem; 
+            font-style: none;
+            text-decoration: none;
+            color: rgb(0, 164, 164);
+        }
+        .actions a:hover{
+            color: rgb(0, 210, 210);
+        }
+    </style>
+</head>
+<body>
+    <div class="actions">
+        <a href="/">Voltar para a tela inicial</a><br>
+        <a href="/procurarUsuario">Procurar Usuário Específico</a><br>
+        <a href="/criarUsuarios">Criar Novo Usuário</a><br>
+        <a href="/atualizarUsuario">Atualizar Usuário</a><br>
+        <a href="/excluirUsuario">Excluir Usuário</a>
+    </div>
+
+    <h1>Lista de Usuários</h1>
+    
+    <div id="status" class="loading">Carregando usuários...</div>
+    
+    <table id="usersTable" style="display:none">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody id="usersList">
+        </tbody>
+    </table>
+
+    <script>
+    (async function(){
+        const status = document.getElementById('status');
+        const table = document.getElementById('usersTable');
+        const tbody = document.getElementById('usersList');
+
+        try {
+            const response = await fetch('/users');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const users = await response.json();
+
+            if (users && users.length > 0) {
+                users.forEach(user => {
+                    const row = tbody.insertRow();
+                    row.insertCell().textContent = user.id || '-';
+                    row.insertCell().textContent = user.nome || '-';
+                    row.insertCell().textContent = user.email || '-';
+                });
+                
+                status.style.display = 'none';
+                table.style.display = 'table';
+            } else {
+                status.className = '';
+                status.textContent = 'Nenhum usuário cadastrado.';
+            }
+        } catch (error) {
+            status.className = 'error';
+            status.textContent = 'Erro ao carregar usuários: ' + error.message;
+        }
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="utf-8">
+	<title>Procurar Usuário</title>
+	<style>
+		body { font-family: Arial, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; }
+		label { display:block; margin-top: 0.75rem; }
+		input { width:100%; padding:0.5rem; margin-top:0.25rem; box-sizing:border-box }
+		button { margin-top:1rem; padding:0.5rem 1rem }
+		#mensagem { margin-top:1rem; font-weight:600 }
+        .actions { margin: 1rem 0; }
+        .actions a { 
+            margin: 1rem; 
+            font-style: none;
+            text-decoration: none;
+            color: rgb(0, 164, 164);
+        }
+        .actions a:hover{
+            color: rgb(0, 210, 210);
+        }
+	</style>
+</head>
+<body>
+    <div class="actions">
+        <a href="/">Voltar para a tela inicial</a><br>
+        <a href="/verUsuarios">Listar Usuários</a><br>
+        <a href="/criarUsuarios">Criar Novo Usuário</a><br>
+        <a href="/atualizarUsuario">Atualizar Usuário</a><br>
+        <a href="/procurarUsuario">Procurar Usuário Específico</a><br>
+    </div>
+
+	<h1>Excluir Usuário Específico</h1>
+
+	<form id="procuraUsuario">
+		<label for="idUsuario">Id do Usuário</label>
+		<input type="number" id="idUsuario" name="idUsuario" required>
+
+		<button type="submit">Enviar</button>
+	</form>
+    
+    <div id="mensagem" role="status" aria-live="polite"></div>  
+
+	<script>
+	(function(){
+		const form = document.getElementById('procuraUsuario');
+        const msg = document.getElementById('mensagem');
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const IdUsuario = document.getElementById('idUsuario').value;
+
+			if(!IdUsuario){
+				msg.textContent = 'Preencha o campo Id de Usuário!';
+				return;
+			}
+
+			try{
+                const usuario = await fetch(`/users/${IdUsuario}`);
+
+                if(usuario.ok){
+                    const usuarioJson = await usuario.json();
+                    let userConfirm = confirm(`Você tem certeza que deseja excluir o usuário: [${usuarioJson.nome} - ${usuarioJson.email}] ?`);
+                    console.log(userConfirm)
+                    if(!userConfirm)
+                        return;
+                    
+                    const response = await fetch(`/users/${usuarioJson.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if(response.ok){
+                        msg.textContent = "Usuário Excluído com Sucesso!";
+                        form.reset();
+                    } else {
+                        console.warn("Erro recebido:", response);
+                        console.log(response)
+                        msg.textContent = (response && response.Erro) 
+                            ? response.Erro 
+                            : `Erro ${response.status}: ${response.statusText}`;
+                    }
+                    
+					form.reset();
+				} else {
+					console.warn("Erro recebido:", usuario);
+					msg.textContent = (usuario && usuario.Erro) 
+						? usuario.Erro 
+						: `Erro ${usuario.status}: ${usuario.statusText}`;
+					alert('Usuário não encontrado!');
+				}
+			} catch(err){
+				console.warn("Erro recebido:", err);
+				alert("Erro: " + err);
+			}
+		});
+	})();
+	</script>
+</body>
+</html>

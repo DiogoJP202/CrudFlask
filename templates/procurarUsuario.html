@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="utf-8">
+	<title>Procurar Usuário</title>
+	<style>
+		body { font-family: Arial, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; }
+		label { display:block; margin-top: 0.75rem; }
+		input { width:100%; padding:0.5rem; margin-top:0.25rem; box-sizing:border-box }
+		button { margin-top:1rem; padding:0.5rem 1rem }
+		#mensagem { margin-top:1rem; font-weight:600 }
+        .actions { margin: 1rem 0; }
+        .actions a { 
+            margin: 1rem; 
+            font-style: none;
+            text-decoration: none;
+            color: rgb(0, 164, 164);
+        }
+        .actions a:hover{
+            color: rgb(0, 210, 210);
+        }
+	</style>
+</head>
+<body>
+    <div class="actions">
+        <a href="/">Voltar para a tela inicial</a><br>
+        <a href="/verUsuarios">Listar Usuários</a><br>
+        <a href="/criarUsuarios">Criar Novo Usuário</a><br>
+        <a href="/atualizarUsuario">Atualizar Usuário</a><br>
+        <a href="/excluirUsuario">Excluir Usuário</a>
+    </div>
+
+	<h1>Procurar Usuário Específico</h1>
+
+	<form id="procuraUsuario">
+		<label for="idUsuario">Id do Usuário</label>
+		<input type="number" id="idUsuario" name="idUsuario" required>
+
+		<button type="submit">Enviar</button>
+	</form>
+    
+    <div id="mensagem" role="status" aria-live="polite"></div>  
+
+	<div id="displayUsuario" role="status" aria-live="polite">
+        <h2>Informações Usuário</h2>
+        <label for="nomeInput">Nome</label>
+		<input type="text" id="nomeInput" name="nomeInput" disabled>
+
+		<label for="emailInput">Email</label>
+		<input type="email" id="emailInput" name="emailInput" disabled>
+    </div>  
+
+	<script>
+	(function(){
+		const form = document.getElementById('procuraUsuario');
+        const nomeInput = document.getElementById('nomeInput');
+        const emailInput = document.getElementById('emailInput');
+        const msg = document.getElementById('mensagem');
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			nomeInput.value = 'Carregando...';
+			emailInput.value = 'Carregando...';
+
+			const IdUsuario = document.getElementById('idUsuario').value;
+
+			if(!IdUsuario){
+				msg.textContent = 'Preencha o campo Id de Usuário!';
+				return;
+			}
+
+			try{
+				const response = await fetch(`/users/${IdUsuario}`);
+
+				if(response.ok){
+					msg.textContent = 'Usuário Encontrado!';
+                    const usuario = await response.json();
+
+                    nomeInput.value = usuario.nome;
+			        emailInput.value = usuario.email;
+                    
+					form.reset();
+				} else {
+					console.warn("Erro recebido:", response);
+					console.log(response)
+					msg.textContent = (response && response.Erro) 
+						? response.Erro 
+						: `Erro ${response.status}: ${response.statusText}`;
+						
+					nomeInput.value = 'Não encontrado!';
+					emailInput.value = 'Não encontrado!';
+				}
+			} catch(err){
+				console.warn("Erro recebido:", err);
+				alert("Erro: " + err);
+
+				nomeInput.value = 'Erro!';
+				emailInput.value = 'Erro!';
+			}
+		});
+	})();
+	</script>
+</body>
+</html>
