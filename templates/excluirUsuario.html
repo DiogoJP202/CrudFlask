@@ -2,98 +2,205 @@
 <html lang="pt-br">
 <head>
 	<meta charset="utf-8">
-	<title>Procurar Usuário</title>
+	<title>Excluir Usuário</title>
 	<style>
-		body { font-family: Arial, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; }
-		label { display:block; margin-top: 0.75rem; }
-		input { width:100%; padding:0.5rem; margin-top:0.25rem; box-sizing:border-box }
-		button { margin-top:1rem; padding:0.5rem 1rem }
-		#mensagem { margin-top:1rem; font-weight:600 }
-        .actions { margin: 1rem 0; }
-        .actions a { 
-            margin: 1rem; 
-            font-style: none;
-            text-decoration: none;
-            color: rgb(0, 164, 164);
-        }
-        .actions a:hover{
-            color: rgb(0, 210, 210);
-        }
+		:root {
+			--primary-color: #00a4a4;
+			--primary-hover: #00d2d2;
+			--danger-color: #d33;
+			--danger-hover: #f44;
+			--bg-color: #f4f8f9;
+			--card-bg: #ffffff;
+			--text-color: #333;
+			--shadow: 0 4px 10px rgba(0,0,0,0.1);
+		}
+
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			font-family: "Segoe UI", Roboto, Arial, sans-serif;
+			background-color: var(--bg-color);
+			color: var(--text-color);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			min-height: 100vh;
+		}
+
+		h1 {
+			text-align: center;
+			color: var(--danger-color);
+			margin-bottom: 1.5rem;
+			font-weight: 600;
+			letter-spacing: 0.5px;
+		}
+
+		.container {
+			background: var(--card-bg);
+			box-shadow: var(--shadow);
+			border-radius: 12px;
+			padding: 2rem 2.5rem;
+			width: 100%;
+			max-width: 480px;
+			text-align: center;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+			text-align: left;
+		}
+
+		label {
+			font-weight: 500;
+			color: #444;
+		}
+
+		input {
+			width: 100%;
+			padding: 0.6rem 0.8rem;
+			border: 1px solid #ccc;
+			border-radius: 6px;
+			transition: border-color 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		input:focus {
+			border-color: var(--danger-color);
+			outline: none;
+			box-shadow: 0 0 5px rgba(211,51,51,0.3);
+		}
+
+		button {
+			margin-top: 0.5rem;
+			padding: 0.75rem;
+			background: var(--danger-color);
+			color: white;
+			border: none;
+			border-radius: 8px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.2s ease;
+		}
+
+		button:hover {
+			background: var(--danger-hover);
+			transform: translateY(-1px);
+			box-shadow: var(--shadow);
+		}
+
+		#mensagem {
+			margin-top: 1rem;
+			font-weight: 600;
+			color: var(--danger-color);
+			min-height: 1.25rem;
+			text-align: center;
+		}
+
+		.actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem;
+			justify-content: center;
+			margin-bottom: 1.5rem;
+		}
+
+		.actions a {
+			text-decoration: none;
+			color: var(--primary-color);
+			background: #e8f7f7;
+			padding: 0.5rem 0.8rem;
+			border-radius: 6px;
+			font-weight: 500;
+			transition: all 0.2s ease;
+		}
+
+		.actions a:hover {
+			background: var(--primary-hover);
+			color: white;
+			transform: translateY(-1px);
+			box-shadow: var(--shadow);
+		}
+
+		footer {
+			margin-top: 2rem;
+			font-size: 0.85rem;
+			color: #888;
+		}
 	</style>
 </head>
 <body>
-    <div class="actions">
-        <a href="/">Voltar para a tela inicial</a><br>
-        <a href="/verUsuarios">Listar Usuários</a><br>
-        <a href="/criarUsuarios">Criar Novo Usuário</a><br>
-        <a href="/atualizarUsuario">Atualizar Usuário</a><br>
-        <a href="/procurarUsuario">Procurar Usuário Específico</a><br>
-    </div>
+	<div class="container">
+		<h1>🗑️ Excluir Usuário</h1>
 
-	<h1>Excluir Usuário Específico</h1>
+		<div class="actions">
+			<a href="/">🏠 Início</a>
+			<a href="/criarUsuarios">👤 Criar</a>
+			<a href="/verUsuarios">📋 Listar</a>
+			<a href="/procurarUsuario">🔍 Procurar</a>
+			<a href="/atualizarUsuario">✏️ Atualizar</a>
+		</div>
 
-	<form id="procuraUsuario">
-		<label for="idUsuario">Id do Usuário</label>
-		<input type="number" id="idUsuario" name="idUsuario" required>
+		<form id="formExcluir">
+			<label for="idUsuario">ID do Usuário</label>
+			<input type="number" id="idUsuario" name="idUsuario" placeholder="Digite o ID do usuário" required>
 
-		<button type="submit">Enviar</button>
-	</form>
-    
-    <div id="mensagem" role="status" aria-live="polite"></div>  
+			<button type="submit">Excluir Usuário</button>
+		</form>
+
+		<div id="mensagem" role="status" aria-live="polite"></div>
+	</div>
+
+	<footer>Flask CRUD • Exclusão de registros</footer>
 
 	<script>
 	(function(){
-		const form = document.getElementById('procuraUsuario');
-        const msg = document.getElementById('mensagem');
+		const form = document.getElementById('formExcluir');
+		const msg = document.getElementById('mensagem');
 
 		form.addEventListener('submit', async (e) => {
 			e.preventDefault();
-			const IdUsuario = document.getElementById('idUsuario').value;
+			msg.textContent = '';
+
+			const IdUsuario = document.getElementById('idUsuario').value.trim();
 
 			if(!IdUsuario){
-				msg.textContent = 'Preencha o campo Id de Usuário!';
+				msg.textContent = '⚠️ Preencha o campo ID de Usuário!';
 				return;
 			}
 
-			try{
-                const usuario = await fetch(`/users/${IdUsuario}`);
+			try {
+				const usuario = await fetch(`/users/${IdUsuario}`);
 
-                if(usuario.ok){
-                    const usuarioJson = await usuario.json();
-                    let userConfirm = confirm(`Você tem certeza que deseja excluir o usuário: [${usuarioJson.nome} - ${usuarioJson.email}] ?`);
-                    console.log(userConfirm)
-                    if(!userConfirm)
-                        return;
-                    
-                    const response = await fetch(`/users/${usuarioJson.id}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
+				if(usuario.ok){
+					const usuarioJson = await usuario.json();
+					const confirmar = confirm(`Você tem certeza que deseja excluir:\n\n${usuarioJson.nome} (${usuarioJson.email}) ?`);
 
-                    if(response.ok){
-                        msg.textContent = "Usuário Excluído com Sucesso!";
-                        form.reset();
-                    } else {
-                        console.warn("Erro recebido:", response);
-                        console.log(response)
-                        msg.textContent = (response && response.Erro) 
-                            ? response.Erro 
-                            : `Erro ${response.status}: ${response.statusText}`;
-                    }
-                    
-					form.reset();
+					if(!confirmar) return;
+
+					const response = await fetch(`/users/${usuarioJson.id}`, {
+						method: 'DELETE',
+						headers: { 'Content-Type': 'application/json' }
+					});
+
+					if(response.ok){
+						msg.textContent = '✅ Usuário excluído com sucesso!';
+						form.reset();
+					} else {
+						msg.textContent = `Erro ${response.status}: não foi possível excluir.`;
+					}
 				} else {
-					console.warn("Erro recebido:", usuario);
-					msg.textContent = (usuario && usuario.Erro) 
-						? usuario.Erro 
-						: `Erro ${usuario.status}: ${usuario.statusText}`;
-					alert('Usuário não encontrado!');
+					alert('Usuário não encontrado.');
+					msg.textContent = '❌ Usuário não encontrado.';
 				}
 			} catch(err){
-				console.warn("Erro recebido:", err);
-				alert("Erro: " + err);
+				console.error(err);
+				msg.textContent = '❌ Erro de rede: ' + (err.message || err);
 			}
 		});
 	})();

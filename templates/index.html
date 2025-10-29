@@ -3,32 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <title>Página Inicial</title>
-    	<style>
-		body { font-family: Arial, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; }
-		label { display:block; margin-top: 0.75rem; }
-		input { width:100%; padding:0.5rem; margin-top:0.25rem; box-sizing:border-box }
-		button { margin-top:1rem; padding:0.5rem 1rem }
-		#mensagem { margin-top:1rem; font-weight:600 }
-        .actions { margin: 1rem 0; }
-        .actions a { 
-            margin: 1rem; 
-            font-style: none;
-            text-decoration: none;
-            color: rgb(0, 164, 164);
-        }	
-        .actions a:hover{
-            color: rgb(0, 210, 210);
+    <style>
+        :root {
+            --primary-color: #00a4a4;
+            --primary-hover: #00d2d2;
+            --bg-color: #f4f8f9;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        </style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+            padding: 2rem 3rem;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .actions a {
+            text-decoration: none;
+            color: var(--primary-color);
+            background: #e8f7f7;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .actions a:hover {
+            color: white;
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: #888;
+        }
+    </style>
 </head>
 <body>
-    <h1>Bem-vindo, {{nome}}!</h1>
-    <div class="actions">
-        <a href="/criarUsuarios">Criar Novo Usuário</a><br>
-        <a href="/verUsuarios">Listar Usuários</a><br>
-        <a href="/procurarUsuario">Procurar Usuário Específico</a><br>
-        <a href="/atualizarUsuario">Atualizar Usuário</a><br>
-        <a href="/excluirUsuario">Excluir Usuário</a>
+    <div class="container">
+        <h1>Bem-vindo, {{nome}}!</h1>
+        <div class="actions">
+            <a href="/criarUsuarios">👤 Criar Novo Usuário</a>
+            <a href="/verUsuarios">📋 Listar Usuários</a>
+            <a href="/procurarUsuario">🔍 Procurar Usuário Específico</a>
+            <a href="/atualizarUsuario">✏️ Atualizar Usuário</a>
+            <a href="/excluirUsuario">🗑️ Excluir Usuário</a>
+        </div>
     </div>
+    <footer>Flask CRUD • Interface simples e elegante</footer>
 </body>
 </html>
