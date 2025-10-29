@@ -1,5 +1,5 @@
 from Usuario import Usuario
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template # type: ignore
 
 _usuarios = []
 app = Flask(__name__)
