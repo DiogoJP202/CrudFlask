@@ -181,10 +181,10 @@
 			}
 
 			try{
-				const res = await fetch(`/users/${id}`, {
+				const res = await fetch(`/users`, {
 					method: 'PUT',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ nome, email })
+					body: JSON.stringify({ nome, email, id })
 				});
 
 				const data = await res.json().catch(() => ({}));

@@ -45,7 +45,7 @@ def UpdateUser():
     novoUsuario = Usuario(nome=requisicao['nome'], email=requisicao['email'])
     _usuarios.append(novoUsuario)
     
-    return jsonify({"Message": "Usuário cadastrado!"}), 201
+    return jsonify({"Message": "Usuário atualizado!"}), 201
 
 @app.route('/users/<int:idUsuario>', methods=['DELETE'])
 def DeleteUser(idUsuario):
